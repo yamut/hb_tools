@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 /**
@@ -17,7 +18,7 @@ import android.view.ViewGroup;
  * Use the {@link temperatureConversion#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class temperatureConversion extends Fragment {
+public class temperatureConversion extends android.support.v4.app.Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -27,7 +28,11 @@ public class temperatureConversion extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private static View rootView;
+
     private OnFragmentInteractionListener mListener;
+
+    private static final String degreeSymbol = "\u00b0";
 
     /**
      * Use this factory method to create a new instance of
@@ -64,7 +69,10 @@ public class temperatureConversion extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_temperature_conversion, container, false);
+        rootView = inflater.inflate(R.layout.fragment_brix_to_sg, container, false);
+        TextView outputText = (TextView)rootView.findViewById(R.id.outputText);
+        outputText.setText("0" + degreeSymbol + "C");
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

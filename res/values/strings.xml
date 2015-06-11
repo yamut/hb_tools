@@ -4,7 +4,7 @@
     <string name="title_home">Home</string>
     <string name="title_exit">Exit</string>
 
-    <string name="title_brix_to_sg">Brix to SG</string>
+    <string name="title_brix_to_sg">SG&lt;-&gt;Brix and ABV Calc</string>
     <string name="title_temperature_conversion">Temperature unit conversion</string>
     <string name="title_og_estimates">OG estimates</string>
     <string name="title_yeast_substitutions">Yeast Substitutions</string>

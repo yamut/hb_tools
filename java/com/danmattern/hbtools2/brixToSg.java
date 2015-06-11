@@ -16,6 +16,12 @@ import android.support.v4.app.FragmentManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,10 +40,17 @@ public class brixToSg extends android.support.v4.app.Fragment {
     private static final int SG = 1;
     private static final int BRIX = 0;
 
-    private static final int NO_ETHANOL = 0;
-    private static final int ETHANOL = 1;
+    private static final boolean HIDE = false;
+    private static final boolean SHOW = true;
 
     private static View rootView;
+
+    private double wortCorrectionFactor = 1.04;
+
+    private Map<Integer, String>  unitTypeNameMap = new HashMap(){{
+        put(1, "Brix");
+        put(0, "SG");
+    }};
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -76,22 +89,21 @@ public class brixToSg extends android.support.v4.app.Fragment {
         }
 
     }
-    protected double convertBetweenBrixAndSg(double input, int unitType, int ethanolSwitch){
+    protected double convertBetweenBrixAndSg(double input, int unitType){
         double output = 0;
+        if( ( unitType == BRIX && ( input < 1 || input > 100 ) ) || ( unitType == SG && ( input < 1 || input > 2 ) ) ){
+            //Should probably trigger an error here, the values are most likely out of range or the abv is so fucking high that im not sure how to calculate it
+            return output;
+        }
         switch( unitType ){
             case BRIX:
-                if(ethanolSwitch == NO_ETHANOL) {
-                    output = 1.000019 + ((0.003865613 * input) + (0.00001296425 * input) + (0.00000005701128 * input));
-                }
-                else if( ethanolSwitch == ETHANOL ){
-
-                }
+                output = convertBrixToSg( input );
                 break;
             case SG:
-
+                output = convertSgToBrix( input );
                 break;
         }
-        return 0;
+        return output;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,52 +111,64 @@ public class brixToSg extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_brix_to_sg, container, false);
         final EditText inputTextField = (EditText) rootView.findViewById(R.id.inputText);
-        final EditText originalBrix = (EditText)rootView.findViewById(R.id.originalBrix);
         final RadioGroup conversionTypeRadioGroup = (RadioGroup) rootView.findViewById(R.id.brix_sg_radio_group);
-        final RadioGroup ethanolRadioGroup = (RadioGroup)rootView.findViewById(R.id.ethanolRadioGroup);
+        final EditText abvCalcOgField = (EditText)rootView.findViewById(R.id.abvOgInputText);
+        final EditText abvCalcFgField = (EditText)rootView.findViewById(R.id.abvFgInputText);
+
+
         conversionTypeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 int radioPosition = conversionTypeRadioGroup.indexOfChild(getView().findViewById(checkedId));
-                Log.d(null, "Conversion type setting is " + Integer.toString(radioPosition));
-                switch(radioPosition){
-                    case SG:
-                        toggleBrixFields(false);
-                        break;
-                    case BRIX:
-                        toggleBrixFields(true);
-                        break;
-                }
+                Log.d(null, "passing " + Double.parseDouble(inputTextField.getText().toString()) + " and " + Integer.toString(radioPosition));
+                double convertedValue = convertBetweenBrixAndSg(Double.parseDouble(inputTextField.getText().toString()), radioPosition);
+                Log.d(null, "here radioPosition is " + Integer.toString(radioPosition) + " value is " + Double.toString(convertedValue));
+                setOutputText(radioPosition, convertedValue);
             }
         });
-        ethanolRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
-            public void onCheckedChanged(RadioGroup group, int checkedId){
-                int radioPosition = ethanolRadioGroup.indexOfChild(getView().findViewById(checkedId));
-                Log.d(null,"Ethanol setting is " + Integer.toString(radioPosition));
-                switch(radioPosition){
-                    case NO_ETHANOL:
-                        originalBrix.setEnabled(false);
-                        originalBrix.setInputType(InputType.TYPE_NULL);
-                        originalBrix.setFocusable(false);
-                        break;
-                    case ETHANOL:
-                        originalBrix.setEnabled(true);
-                        originalBrix.setFocusable(true);
-                        break;
-                }
 
-            }
-        });
         TextWatcher textWatcher = new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d(null,"Hello");
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
             public void afterTextChanged(Editable s) {
+                int radioPosition = getConversionType();
+                Log.d(null,"value of input?" + Boolean.toString(inputTextField.getText().toString().isEmpty()));
+                if(inputTextField.getText().toString().isEmpty() == true){
+                    setOutputText(radioPosition, 0);
+                    return;
+                }
                 double input = Double.parseDouble(inputTextField.getText().toString());
-                Log.d(null,"You entered " + Double.toString(input));
+
+                double convertedValue = convertBetweenBrixAndSg(input, radioPosition);
+                setOutputText(radioPosition, convertedValue);
             }
         };
         inputTextField.addTextChangedListener(textWatcher);
+
+        TextWatcher abvCalcOgTextWatcher = new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void afterTextChanged(Editable s) {
+                if(abvCalcOgField.getText().toString().isEmpty() == true || abvCalcFgField.getText().toString().isEmpty() == true ){
+                    setAbvOutputText(0);
+                    return;
+                }
+                setAbvOutputText(calculateAbv(Double.parseDouble(abvCalcOgField.getText().toString()), Double.parseDouble(abvCalcFgField.getText().toString())));
+            }
+        };
+        TextWatcher abvCalcFgTextWatcher = new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void afterTextChanged(Editable s) {
+                if(abvCalcFgField.getText().toString().isEmpty() == true || abvCalcOgField.getText().toString().isEmpty() == true ){
+                    setAbvOutputText(0);
+                    return;
+                }
+                setAbvOutputText(calculateAbv(Double.parseDouble(abvCalcOgField.getText().toString()), Double.parseDouble(abvCalcFgField.getText().toString())));
+            }
+        };
+        abvCalcOgField.addTextChangedListener(abvCalcOgTextWatcher);
+        abvCalcFgField.addTextChangedListener(abvCalcFgTextWatcher);
+
         return rootView;
     }
 
@@ -154,21 +178,16 @@ public class brixToSg extends android.support.v4.app.Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-    private void toggleBrixFields(boolean hide){
-        RadioGroup ethanolRadioGroup = (RadioGroup) rootView.findViewById(R.id.ethanolRadioGroup);
-        EditText originalBrix = (EditText) rootView.findViewById(R.id.originalBrix);
 
-        for(int i = 0; i < ethanolRadioGroup.getChildCount(); i++){
-            ((RadioButton)ethanolRadioGroup.getChildAt(i)).setEnabled(hide);
-        }
-        Log.d(null,"Ethanol status is set to " + Integer.toString(checkEthanolStatus()));
-        if(checkEthanolStatus() == ETHANOL && hide == false ) {
-            originalBrix.setEnabled(hide);
-        }
-    }
-    private int checkEthanolStatus(){
-        RadioGroup ethanolRadioGroup = (RadioGroup) rootView.findViewById(R.id.ethanolRadioGroup);
-        return 1;
+    /**
+     * Returns selected conversion type mapped to static SG/BRIX values
+     * @return int BRIX/SG
+     */
+    private int getConversionType(){
+        final RadioGroup conversionTypeRadioGroup = (RadioGroup) rootView.findViewById(R.id.brix_sg_radio_group);
+        int checkedRadioButtonId = conversionTypeRadioGroup.getCheckedRadioButtonId();
+        View checkedRadioButton = rootView.findViewById(checkedRadioButtonId);
+        return conversionTypeRadioGroup.indexOfChild(checkedRadioButton);
     }
 
     @Override
@@ -188,6 +207,8 @@ public class brixToSg extends android.support.v4.app.Fragment {
         mListener = null;
     }
 
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -203,4 +224,54 @@ public class brixToSg extends android.support.v4.app.Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    private double convertBrixToSg(double brix){
+        double output = 0;
+        if( brix >= 1 && brix <= 100 ){
+            double correctedBrix = brix / wortCorrectionFactor;
+            output = 1 + ( correctedBrix / ( 258.6 - ( ( correctedBrix / 258.2 ) * 227.1 ) ) );
+        }
+        return output;
+    }
+    private double convertSgToBrix(double sg ){
+        double output = 0;
+        if( sg > 1 ){
+            output = -616.868 + ( 1111.14 * sg ) - ( 630.272 * sg * sg ) + ( 135.997 * sg * sg * sg );
+        }
+        return output;
+    }
+
+    private double calculateAbv( double og, double fg ){
+        double output = 0;
+        if( og > 1 && og < 2 && fg > 1 && fg < 2 ){
+            output = ( 76.08 * ( og - fg ) / ( 1.775 - og ) ) * ( fg / 0.794 );
+        }
+        return output;
+    }
+
+    private void setOutputText(int unitType, double outputValue ){
+        DecimalFormat decimalFormat = new DecimalFormat("#.####");
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+        String unitName = unitTypeNameMap.get(unitType);
+        TextView outputTextField = (TextView)rootView.findViewById(R.id.outputText);
+        String outputValueString;
+        Log.d(null,"output string length is " + Double.toString(outputValue).length() );
+        if( Double.toString(outputValue).length() >= 7 ){
+            outputValueString = Double.toString(outputValue).substring(0,6);
+        }
+        else{
+            outputValueString = Double.toString(outputValue);
+        }
+        outputTextField.setText(unitName + ": " + outputValueString);
+    }
+    private void setAbvOutputText(double abv){
+        String abvOutput = "0";
+        if(Double.toString(abv).length() > 4 ){
+            abvOutput = Double.toString(abv).substring(0,4);
+        }
+        else{
+            abvOutput = Double.toString(abv);
+        }
+        TextView abvOutputTextField = (TextView)rootView.findViewById(R.id.outputAbvText);
+        abvOutputTextField.setText("ABV: " + abvOutput + "%");
+    }
 }

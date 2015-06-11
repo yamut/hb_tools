@@ -34,47 +34,54 @@
             android:text="SG"
             android:id="@+id/sgRadioButton"
             android:checked="false" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="SG: 0.0"
+            android:id="@+id/outputText"
+            android:layout_row="3"
+            android:layout_column="0" />
     </RadioGroup>
 
-    <RadioGroup
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_row="2"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="You must use SG below like 1.055"
+        android:id="@+id/textView"
+        android:layout_row="23"
         android:layout_column="0"
-        android:id="@+id/ethanolRadioGroup">
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No ethanol"
-            android:id="@+id/noEthanolRadioButton"
-            android:checked="true" />
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ethanol"
-            android:id="@+id/ethanolRadioButton"
-            android:checked="false" />
-    </RadioGroup>
+        android:layout_columnSpan="2" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:ems="10"
-        android:id="@+id/originalBrix"
-        android:layout_row="3"
+        android:id="@+id/abvOgInputText"
+        android:layout_row="24"
         android:layout_column="0"
-        android:hint="Original Brix"
-        android:enabled="false"/>
+        android:hint="Original Gravity"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/abvFgInputText"
+        android:layout_row="24"
+        android:layout_column="1"
+        android:hint="Final gravity"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="SG: 0.0"
-        android:id="@+id/outputText"
-        android:layout_row="10"
+        android:text="ABV: 0%"
+        android:id="@+id/outputAbvText"
+        android:layout_row="25"
         android:layout_column="0" />
+
 </GridLayout>

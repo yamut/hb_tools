@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -38,6 +39,8 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
     private int firstRun = 1;
+
+    private String lastFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +62,23 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
 
 Log.d(null,"Pre switch");
-        Fragment fragment = null;
+        android.support.v4.app.Fragment fragment = null;
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
+        if( lastFragment != null ) {
+            Fragment lastFragmentResource = fragmentManager.findFragmentByTag(lastFragment);
+            ft.remove(lastFragmentResource).commit();
+        }
         switch(position){
             case 1:
                 fragment = brixToSg.newInstance("","");
+                lastFragment = "brixToSg";
                 break;
             case 2:
                 break;
             case 3:
                 fragment = temperatureConversion.newInstance("","");
+                lastFragment = "temperatureConversion";
                 break;
             case 4:
             case 5:
@@ -79,50 +90,15 @@ Log.d(null,"Pre switch");
                 break;
 
         }
-        Log.d(null,"post switch");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Log.d(null,"foo");
-        android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
-        Log.d(null,"bar");
-        ft.replace(R.id.container,fragment).commit();
+
+        int foo = R.id.container;
+        FrameLayout container = (FrameLayout)findViewById(R.id.container);
+        if( container != null ) {
+            container=container;
+        }
+                ft.replace(R.id.container, fragment).commit();
         Log.d(null,"baz");
 
-
-/*
-        Log.d(null,"parameter is " + Integer.toString(position));
-        if(firstRun == 1 ) {
-            Fragment fragment = new brixToSg();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                    .commit();
-            firstRun = 0;
-        }
-        else{
-            Fragment fragment = null;
-            switch(position){
-                case 1:
-                    fragment = brixToSg.newInstance("foo","bar");
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    fragment = temperatureConversion.newInstance("baz","foo");
-                    break;
-                default:
-                    fragment = PlaceholderFragment.newInstance(position+1);
-                    break;
-
-            }
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
-            Log.d(null, "a");
-            ft.replace(R.id.container, fragment);
-            Log.d(null, "b");
-            ft.commit();
-            Log.d(null,"c");
-        }
-*/
         Log.d(null, "Do some shit");
     }
 
@@ -181,7 +157,7 @@ Log.d(null,"Pre switch");
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends android.support.v4.app.Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
