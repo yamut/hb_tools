@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">HBTools2</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_exit">Exit</string>
+
+    <string name="title_brix_to_sg">Brix to SG</string>
+    <string name="title_temperature_conversion">Temperature unit conversion</string>
+    <string name="title_og_estimates">OG estimates</string>
+    <string name="title_yeast_substitutions">Yeast Substitutions</string>
+    <string name="title_hop_substitutions">Hop Substitutions</string>
+    <string name="title_grain_substitutions">Grain Substitutions</string>
+    <string name="title_aa_to_oz">Alpha Acid Unit Conversion</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_brix_to_sg">brixToSg</string>
+
+    <string name="hello_world">Hello world!</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
