@@ -1,9 +1,8 @@
-package com.danmattern.hbtools2;
+package com.danmattern.hbtools;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,9 +19,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import java.net.URI;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -101,16 +96,16 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment  {
                 selectItem(position);
             }
         });
-        String[] menuContents = new String[9];
+        String[] menuContents = new String[5];
         menuContents[0] = getString(R.string.title_home);
         menuContents[1] = getString(R.string.title_brix_to_sg);
         menuContents[2] = getString(R.string.title_og_estimates);
         menuContents[3] = getString(R.string.title_temperature_conversion);
         menuContents[4] = getString(R.string.title_aa_to_oz);
-        menuContents[5] = getString(R.string.title_hop_substitutions);
-        menuContents[6] = getString(R.string.title_grain_substitutions);
-        menuContents[7] = getString(R.string.title_yeast_substitutions);
-        menuContents[8] = getString(R.string.title_exit);
+        //menuContents[5] = getString(R.string.title_hop_substitutions);
+        //menuContents[6] = getString(R.string.title_grain_substitutions);
+        //menuContents[7] = getString(R.string.title_yeast_substitutions);
+        //menuContents[8] = getString(R.string.title_exit);
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
@@ -259,10 +254,10 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment  {
             return true;
         }
 
-        if (item.getItemId() == R.id.action_example) {
+        /*if (item.getItemId() == R.id.action_example) {
             Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

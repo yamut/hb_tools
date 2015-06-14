@@ -1,20 +1,16 @@
-package com.danmattern.hbtools2;
+package com.danmattern.hbtools;
 
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 //import android.app.Fragment;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -119,9 +115,9 @@ public class brixToSg extends android.support.v4.app.Fragment {
         conversionTypeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 int radioPosition = conversionTypeRadioGroup.indexOfChild(getView().findViewById(checkedId));
-                Log.d(null, "passing " + Double.parseDouble(inputTextField.getText().toString()) + " and " + Integer.toString(radioPosition));
+                //Log.d(null, "passing " + Double.parseDouble(inputTextField.getText().toString()) + " and " + Integer.toString(radioPosition));
                 double convertedValue = convertBetweenBrixAndSg(Double.parseDouble(inputTextField.getText().toString()), radioPosition);
-                Log.d(null, "here radioPosition is " + Integer.toString(radioPosition) + " value is " + Double.toString(convertedValue));
+                //Log.d(null, "here radioPosition is " + Integer.toString(radioPosition) + " value is " + Double.toString(convertedValue));
                 setOutputText(radioPosition, convertedValue);
             }
         });
@@ -131,7 +127,7 @@ public class brixToSg extends android.support.v4.app.Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
             public void afterTextChanged(Editable s) {
                 int radioPosition = getConversionType();
-                Log.d(null,"value of input?" + Boolean.toString(inputTextField.getText().toString().isEmpty()));
+                //Log.d(null,"value of input?" + Boolean.toString(inputTextField.getText().toString().isEmpty()));
                 if(inputTextField.getText().toString().isEmpty() == true){
                     setOutputText(radioPosition, 0);
                     return;
@@ -205,6 +201,7 @@ public class brixToSg extends android.support.v4.app.Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
     }
 
 
@@ -254,7 +251,7 @@ public class brixToSg extends android.support.v4.app.Fragment {
         String unitName = unitTypeNameMap.get(unitType);
         TextView outputTextField = (TextView)rootView.findViewById(R.id.outputText);
         String outputValueString;
-        Log.d(null,"output string length is " + Double.toString(outputValue).length() );
+        //Log.d(null,"output string length is " + Double.toString(outputValue).length() );
         if( Double.toString(outputValue).length() >= 7 ){
             outputValueString = Double.toString(outputValue).substring(0,6);
         }

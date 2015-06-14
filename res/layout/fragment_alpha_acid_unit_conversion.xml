@@ -1,0 +1,36 @@
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.danmattern.hbtools.alphaAcidUnitConversion">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/aaUnitQuantity"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:hint="AA Units" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/aaPercentage"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:hint="AA% of hops"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="0.0oz"
+        android:id="@+id/outputTextLabel"
+        android:layout_row="2"
+        android:layout_column="0" />
+</GridLayout>
